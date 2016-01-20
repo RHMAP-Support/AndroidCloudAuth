@@ -24,6 +24,7 @@ import com.feedhenry.sdk.FH;
 import com.feedhenry.sdk.FHActCallback;
 import com.feedhenry.sdk.FHHttpClient;
 import com.feedhenry.sdk.FHResponse;
+import com.feedhenry.sdk.api.FHAuthRequest;
 import com.feedhenry.sdk.api.FHCloudRequest;
 
 import android.os.Bundle;
@@ -52,6 +53,15 @@ public class FHStarterActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
+            	try {
+            		loginWithFh();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            
+            
             }
 
             @Override
@@ -86,10 +96,25 @@ public class FHStarterActivity extends Activity {
            	Log.i("init", "YOUR CLOUD CALL HAS FAILED");    	  
     	  }
     	});
-    	
-    	
-    	
-    
-    
     }
+	
+	public void loginWithFh(){
+		  try{
+		    FHAuthRequest authRequest = FH.buildAuthRequest("InstantSupportAuth", "testuser", "Testpass1");
+		    authRequest.executeAsync(new FHActCallback() {
+
+		      @Override
+		      public void success(FHResponse resp) {
+		    	  Log.i("init", "Authentication Successful");  
+		      }
+
+		      @Override
+		      public void fail(FHResponse resp) {
+		    	  Log.i("init", "AUTHENTICATION FAILED");  
+		      }
+		    });
+		  }catch(Exception e){
+		    e.printStackTrace();
+		  }
+		}	
 }
