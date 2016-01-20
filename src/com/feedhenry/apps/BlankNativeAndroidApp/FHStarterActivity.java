@@ -15,16 +15,24 @@
  */
 package com.feedhenry.apps.BlankNativeAndroidApp;
 
+
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
+import org.json.fh.JSONObject;
+
 import com.feedhenry.sdk.FH;
 import com.feedhenry.sdk.FHActCallback;
+import com.feedhenry.sdk.FHHttpClient;
 import com.feedhenry.sdk.FHResponse;
+import com.feedhenry.sdk.api.FHCloudRequest;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 
 public class FHStarterActivity extends Activity {
+	
+	String TAG = "fh";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,18 +45,51 @@ public class FHStarterActivity extends Activity {
             @Override
             public void success(FHResponse resp) {
                 //NOTE: other FH methods can only be called after FH.init succeeds
+            	Log.i("init", "Hi.  I have just successfully done an init");
+            	try {
+					callCloud();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
 
             @Override
             public void fail(FHResponse arg0) {
-
+               	Log.i("init", "YOU HAVE FAIL");
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_fhstarter, menu);
-        return true;
+	public void callCloud() throws Exception {
+    	
+    	//build the request object with request path, method, headers and data
+    	Header[] headers = new Header[1];
+    	headers[0] = new BasicHeader("contentType", "application/json");
+    	//The request should have a timeout of 25 seconds, 10 is the default
+    	FHHttpClient.setTimeout(25000);
+    	FHCloudRequest request;
+		request = FH.buildCloudRequest("/hello", "POST",  headers, new JSONObject().put("username", "testuser2"));
+    	
+		//the request will be executed asynchronously
+    	request.executeAsync(new FHActCallback() {
+    	  @Override
+    	  public void success(FHResponse res) {
+    	    //the function to execute if the request is successful
+             	Log.i("init", "Successful cloud call");
+             	
+    	  }
+
+    	  @Override
+    	  public void fail(FHResponse res) {
+    	    //the function to execute if the request is failed
+           	Log.i("init", "YOUR CLOUD CALL HAS FAILED");    	  
+    	  }
+    	});
+    	
+    	
+    	
+    
+    
     }
 }
