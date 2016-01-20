@@ -100,7 +100,7 @@ public class FHStarterActivity extends Activity {
 	
 	public void loginWithFh(){
 		  try{
-		    FHAuthRequest authRequest = FH.buildAuthRequest("InstantSupportAuth", "testuser", "Testpass1");
+		    FHAuthRequest authRequest = FH.buildAuthRequest("InstantSupportAuth", "<test user>", "<test password>");
 		    authRequest.executeAsync(new FHActCallback() {
 
 		      @Override
